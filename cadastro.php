@@ -23,15 +23,36 @@ if ($stmt->rowCount() > 0) {
    header("Location: login.php");
    exit;
 }
+// Válida os dados enviados pelo formulário
+if (!empty($_POST['nome']) && !empty($_POST['email'])) {
+   $nome = addslashes($_POST['nome']);
+   $email = addslashes($_POST['email']);
+   $id_pai = $_SESSION['uLogin'];
 
-$sql = "SELECT count(*) as count FROM usuarios";
-$stmt = $pdo->prepare($sql);
-$stmt->execute();
-if($stmt->rowCount() > 0) {
-   $data = $stmt->fetch();
-   $total = $data['count'];
-} else {
-   $total = 0;
+   // Verifica se e-mail já existe na base de dados
+   $sql = "SELECT * FROM usuarios WHERE email = :email";
+   $stmt = $pdo->prepare($sql);
+   $stmt->bindValue(":email", $email);
+   $stmt->execute();
+
+   if ($stmt->rowCount() == 0) {
+      $sql = "INSERT INTO usuarios (id_pai, nome, email, senha) VALUES (?,?,?,?)";
+      $stmt = $pdo->prepare($sql);
+      $stmt->bindParam(1, $id_pai);
+      $stmt->bindParam(2, $nome);
+      $stmt->bindParam(3, $email);
+      $stmt->bindParam(4, md5($email));
+      $stmt->execute();
+
+      if ($stmt->rowCount() > 0) {
+         header("Location: index.php");
+         exit;
+      } else {
+         echo "Não foi possível cadastrar o usuário $nome";
+      }
+   } else {
+      echo "Já existe usuário cadastrado com esse e-mail!";
+   }
 }
 ?>
 <!DOCTYPE html>
@@ -57,11 +78,11 @@ if($stmt->rowCount() > 0) {
 
          <div class="collapse navbar-collapse" id="navb">
             <ul class="navbar-nav mr-auto">
-               <li class="nav-item active">
+               <li class="nav-item">
                   <a class="nav-link" href="index.php">Dashboard</a>
                </li>
                <!-- Dropdown -->
-               <li class="nav-item dropdown">
+               <li class="nav-item dropdown active">
                   <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
                      Usuários
                   </a>
@@ -84,14 +105,22 @@ if($stmt->rowCount() > 0) {
                </li>               
             </ul>
          </div>
-      </nav>
-      <!-- Start .\ Navbar -->
+      </nav>      
+      <!-- End .\ Navbar -->
       
-      <div class="jumbotron jumbotron-fluid">
-         <div class="container pb-5">
-            <h1>Sistema de Marketing Multinível</h1>
-            <h2><?php echo $total; ?> usuários cadastrados</h2>   
-         </div>
+      <div class="container mt-5">
+         <h2>Cadastro de Usuários</h2>
+         <form method="POST">            
+            <div class="form-group">
+               <label for="nome">Nome:</label>
+               <input type="text" class="form-control" id="nome" placeholder="Enter name" name="nome">
+            </div>
+            <div class="form-group">
+               <label for="email">Email:</label>
+               <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
+            </div>
+            <button type="submit" class="btn btn-primary">Cadastrar</button>
+         </form>
       </div>
 
    </body>

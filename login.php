@@ -1,11 +1,34 @@
 <?php
 session_start();
 require_once 'config.php';
+
+// Verifica se os valores não estão vázios
+if(!empty($_POST['email']) && !empty($_POST['senha'])) {
+   $email = addslashes($_POST['email']);
+   $senha = addslashes($_POST['senha']);
+   
+   $sql = "SELECT * FROM usuarios WHERE email = :email AND senha = :senha";
+   $stmt = $pdo->prepare($sql);
+   $stmt->bindValue(":email", $email);
+   $stmt->bindValue(":senha", md5($senha));
+   $stmt->execute();
+   
+   if($stmt->rowCount() > 0) {
+      
+      $data = $stmt->fetch();
+      $_SESSION['uLogin'] = $data['id'];
+      header("Location: index.php");
+      exit;
+      
+   } else {
+      echo "Usuário e/ou Senha inválidos!";
+   }
+}
 ?>
 <!DOCTYPE html>
 <html>
    <head>
-      <title></title>
+      <title>Sistema de Marketing Multinível</title>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
 
