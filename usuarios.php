@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once 'config.php';
+require_once 'funcoes.php';
 
 // Verifica se sessão está vázia, caso esteja redireciona para login.php
 if (empty($_SESSION['uLogin'])) {
@@ -25,16 +26,8 @@ if ($stmt->rowCount() > 0) {
    exit;
 }
 
-// Busca usuários cadastrados pelo usuários logado
-$sql = "SELECT * FROM usuarios WHERE id_pai = :id";
-$stmt = $pdo->prepare($sql);
-$stmt->bindValue(":id", $id);
-$stmt->execute();
-if ($stmt->rowCount() > 0) {
-   $usuarios = $stmt->fetchAll();
-} else {
-   $usuarios = array();
-}
+// Lista usuarios
+$usuarios = listaUsuarios($id, $limite);
 
 // Busca o líder do usuário logado
 $sql = "SELECT nome FROM usuarios WHERE id_pai = :id_pai";

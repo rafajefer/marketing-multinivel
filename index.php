@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once 'config.php';
+require_once 'funcoes.php';
 
 // Verifica se sessão está vázia, caso esteja redireciona para login.php
 if (empty($_SESSION['uLogin'])) {
@@ -93,7 +94,17 @@ if($stmt->rowCount() > 0) {
             <h2><?php echo $total; ?> usuários cadastrados</h2>   
          </div>
       </div>
-
+      <div class="container">
+      <?php 
+         // Lista usuarios
+         $usuarios = listaUsuarios($id, $limite);
+         exibir($usuarios);
+         
+      ?>
+         <pre>
+            <?php // print_r($usuarios);?>
+         </pre>
+      </div>
    </body>
 </html>
 
