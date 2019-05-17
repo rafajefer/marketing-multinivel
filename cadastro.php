@@ -41,7 +41,7 @@ if (!empty($_POST['nome']) && !empty($_POST['email'])) {
       $stmt->bindParam(1, $id_pai);
       $stmt->bindParam(2, $nome);
       $stmt->bindParam(3, $email);
-      $stmt->bindParam(4, md5($email));
+      $stmt->bindParam(4, md5(123));
       $stmt->execute();
 
       if ($stmt->rowCount() > 0) {
@@ -97,7 +97,7 @@ if (!empty($_POST['nome']) && !empty($_POST['email'])) {
             </ul>
             <!-- Navbar text-->
             <span class="navbar-text mr-5">
-               Olá, <?php echo $nome; ?>
+               Olá, <?php echo $_SESSION['usuario']['nome']; ?> <sup><span class="badge badge-success"><?php echo $_SESSION['usuario']['patente']; ?></span></sup>
             </span>
             <ul class="navbar-nav my-auto">
                <li class="nav-item active">

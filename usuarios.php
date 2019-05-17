@@ -87,7 +87,7 @@ if($stmt->rowCount() > 0) {
             </ul>
             <!-- Navbar text-->
             <span class="navbar-text mr-5">
-               Olá, <?php echo $nome; ?>
+               Olá, <?php echo $_SESSION['usuario']['nome']; ?> <sup><span class="badge badge-success"><?php echo $_SESSION['usuario']['patente']; ?></span></sup>
             </span>
             <ul class="navbar-nav my-auto">
                <li class="nav-item active">
@@ -142,7 +142,7 @@ if($stmt->rowCount() > 0) {
                   </tr>
                   <?php 
                      // Verifica se user possuí filhos
-                     $sql = "SELECT * FROM usuarios WHERE id_pai = :id_filho";
+                     $sql = "SELECT usuarios.id, usuarios.id_pai, usuarios.nome, usuarios.email, patentes.nome as patente FROM usuarios LEFT JOIN patentes ON usuarios.patente = patentes.id WHERE id_pai = :id_filho";
                      $stmt = $pdo->prepare($sql);
                      $stmt->bindValue(":id_filho", $user['id']);
                      $stmt->execute();
@@ -174,7 +174,7 @@ if($stmt->rowCount() > 0) {
                      
                       <?php 
                      // Verifica se user possuí filhos
-                     $sql = "SELECT * FROM usuarios WHERE id_pai = :id_filho";
+                     $sql = "SELECT usuarios.id, usuarios.id_pai, usuarios.nome, usuarios.email, patentes.nome as patente FROM usuarios LEFT JOIN patentes ON usuarios.patente = patentes.id WHERE id_pai = :id_filho";
                      $stmt = $pdo->prepare($sql);
                      $stmt->bindValue(":id_filho", $row['id']);
                      $stmt->execute();
@@ -205,7 +205,7 @@ if($stmt->rowCount() > 0) {
                      </tr>
                            <?php 
                      // Verifica se user possuí filhos
-                     $sql = "SELECT * FROM usuarios WHERE id_pai = :id_filho";
+                     $sql = "SELECT usuarios.id, usuarios.id_pai, usuarios.nome, usuarios.email, patentes.nome as patente FROM usuarios LEFT JOIN patentes ON usuarios.patente = patentes.id WHERE id_pai = :id_filho";
                      $stmt = $pdo->prepare($sql);
                      $stmt->bindValue(":id_filho", $row['id']);
                      $stmt->execute();
@@ -236,7 +236,7 @@ if($stmt->rowCount() > 0) {
                      </tr>
                            <?php 
                      // Verifica se user possuí filhos
-                     $sql = "SELECT * FROM usuarios WHERE id_pai = :id_filho";
+                     $sql = "SELECT usuarios.id, usuarios.id_pai, usuarios.nome, usuarios.email, patentes.nome as patente FROM usuarios LEFT JOIN patentes ON usuarios.patente = patentes.id WHERE id_pai = :id_filho";
                      $stmt = $pdo->prepare($sql);
                      $stmt->bindValue(":id_filho", $row['id']);
                      $stmt->execute();

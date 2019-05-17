@@ -12,14 +12,15 @@ if (empty($_SESSION['uLogin'])) {
 // Busca o nome do usuário logado
 $id = $_SESSION['uLogin'];
 
-$sql = "SELECT nome FROM usuarios WHERE id = :id";
+$sql = "SELECT usuarios.nome, patentes.nome as patente FROM usuarios LEFT JOIN patentes ON usuarios.patente = patentes.id WHERE usuarios.id = :id";
 $stmt = $pdo->prepare($sql);
 $stmt->bindValue(":id", $id);
 $stmt->execute();
 
 if ($stmt->rowCount() > 0) {
    $data = $stmt->fetch();
-   $nome = $data['nome'];
+   $_SESSION['usuario']['nome'] = $data['nome'];
+   $_SESSION['usuario']['patente'] = $data['patente'];
 } else {
    header("Location: login.php");
    exit;
@@ -77,7 +78,7 @@ if($stmt->rowCount() > 0) {
             </ul>
             <!-- Navbar text-->
             <span class="navbar-text mr-5">
-               Olá, <?php echo $nome; ?>
+               Olá, <?php echo $_SESSION['usuario']['nome']; ?> <sup><span class="badge badge-success"><?php echo $_SESSION['usuario']['patente']; ?></span></sup>
             </span>
             <ul class="navbar-nav my-auto">
                <li class="nav-item active">
